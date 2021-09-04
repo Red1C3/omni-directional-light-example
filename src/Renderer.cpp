@@ -33,7 +33,6 @@ void Renderer::init()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)sizeof(vec3));
     assert("Failed to init" && glGetError() == 0);
-    //TODO shaders
 }
 void Renderer::renderPass(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

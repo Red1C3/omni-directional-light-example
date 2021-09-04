@@ -1,7 +1,8 @@
 #pragma once
-#include<GL/glew.h>
-#include<assert.h>
-#include<Mesh.h>
+#include <GL/glew.h>
+#include <assert.h>
+#include <Mesh.h>
+#include <Shader.h>
 class Renderer
 {
 private:
