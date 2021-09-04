@@ -1,0 +1,7 @@
+project('odle','cpp')
+srcAssembler=run_command('srcAssembler.sh')
+sources=srcAssembler.stdout().strip().split('\n')
+sfmlWindow=dependency('sfml-window')
+inc_dir=include_directories('include')
+glew=dependency('glew')
+executable('odle',sources,include_directories:[inc_dir],dependencies:[sfmlWindow,glew])
