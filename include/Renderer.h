@@ -11,7 +11,7 @@ private:
     GLuint framebuffers[6];
     std::vector<Mesh> meshes;
     std::vector<glm::vec3> axis;
-    Shader lightShader;
+    Shader lightShader,mainShader;
 
 public:
     static Renderer &instance();

@@ -40,14 +40,22 @@ void Renderer::init()
     lightShader.registerUniform("view");
     lightShader.registerUniform("persp");
     lightShader.updateUniform("persp", perspective(45.0f, 1.0f, 0.1f, 100.0f));
-    Mesh cubeA("./Assets/Cube.glb", vec3(3, 0, 0));
-    Mesh verticalPlane("./Assets/Vertical Plane.glb", vec3(5, 0, 0));
+    mainShader = Shader("./Assets/main.vert", "./Assets/main.frag");
+    glUseProgram(mainShader.id);
+    mainShader.registerUniform("model");
+    mainShader.registerUniform("view");
+    mainShader.registerUniform("persp");
+    mainShader.updateUniform("persp", perspective(45.0f, 1280.0f / 720.0f, 0.1f, 100.0f));
+    mainShader.updateUniform("view",lookAt(vec3(3,3,3),vec3(0,0,0),vec3(0,1,0)));
+    Mesh cubeA("./Assets/Cube.glb", vec3(-5, 0, 0));
+    Mesh verticalPlane("./Assets/Vertical Plane.glb", vec3(-7, 0, 0));
     meshes.push_back(cubeA);
     meshes.push_back(verticalPlane);
     assert("Failed to init" && glGetError() == 0);
 }
 void Renderer::renderPass()
 {
+    glViewport(0, 0, SHADOWMAP, SHADOWMAP);
     for (unsigned i = 0; i < 6; ++i)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffers[i]);
@@ -59,5 +67,13 @@ void Renderer::renderPass()
             meshes[j].draw();
         }
     }
-    assert("Error in renderPass" && glGetError() == 0);
+    glViewport(0, 0, 1280, 720);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glUseProgram(mainShader.id);
+    for (unsigned i = 0; i < meshes.size();++i){
+        mainShader.updateUniform("model", meshes[i].model);
+        meshes[i].draw();
+    }
+        assert("Error in renderPass" && glGetError() == 0);
 }
