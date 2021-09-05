@@ -9,6 +9,7 @@ private:
     std::map<std::string, GLint> uniforms;
 
 public:
+    Shader();
     Shader(const char *vertexShaderPath, const char *fragmentShaderPath);
     GLuint id;
     void registerUniform(const char* uniform);

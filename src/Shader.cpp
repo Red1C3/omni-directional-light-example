@@ -1,6 +1,7 @@
 #include <Shader.h>
 using namespace std;
 using namespace glm;
+Shader::Shader(){}
 Shader::Shader(const char *vertexShaderPath, const char *fragmentShaderPath)
 {
     auto vertexShaderCode = readBin(vertexShaderPath);

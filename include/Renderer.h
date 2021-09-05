@@ -10,6 +10,8 @@ private:
     GLuint depthTex[6];
     GLuint framebuffers[6];
     std::vector<Mesh> meshes;
+    std::vector<glm::vec3> axis;
+    Shader lightShader;
 
 public:
     static Renderer &instance();
