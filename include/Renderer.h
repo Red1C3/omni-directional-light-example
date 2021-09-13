@@ -7,11 +7,11 @@ class Renderer
 {
 private:
     Renderer();
-    GLuint depthTex[6];
+    GLuint cubeMap;
     GLuint framebuffers[6];
     std::vector<Mesh> meshes;
     std::vector<glm::vec3> axis;
-    Shader lightShader,mainShader;
+    Shader lightShader, mainShader;
 
 public:
     static Renderer &instance();
