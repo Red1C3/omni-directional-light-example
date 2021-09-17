@@ -1,5 +1,9 @@
 #version 330
-out vec4 color;
+in vec4 pos_world;
 void main(){
-  color=vec4(1,1,1,1);
+  vec3 lightPos=vec3(0,0,0);
+  float farPlane=100.0f;
+  float dist=length(pos_world.xyz-lightPos);
+  dist/=farPlane;
+  gl_FragDepth=dist;
 }

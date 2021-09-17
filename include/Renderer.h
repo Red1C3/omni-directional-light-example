@@ -10,7 +10,7 @@ private:
     GLuint cubeMap;
     GLuint framebuffers[6];
     std::vector<Mesh> meshes;
-    std::vector<glm::vec3> axis;
+    std::vector<glm::mat4> shadowViews;
     Shader lightShader, mainShader;
 
 public:
