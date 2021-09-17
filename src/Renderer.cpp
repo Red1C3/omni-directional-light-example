@@ -17,6 +17,7 @@ void Renderer::init()
         assert("Failed to init glew" && 0);
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.f, 0.f, 0.f, 1.0f);
+    //Generate cubemap
     glGenTextures(1, &cubeMap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -24,6 +25,7 @@ void Renderer::init()
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //bind cubemap to 6 framebuffers
     for (unsigned i = 0; i < 6; ++i)
     {
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH24_STENCIL8,
@@ -36,6 +38,7 @@ void Renderer::init()
         glReadBuffer(GL_NONE);
         assert(glGetError() == 0);
     }
+    //write shadow views matrices for depth writing
     vec3 lightPos = vec3(0, 0, 0);
     shadowViews.push_back(
         glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
@@ -49,11 +52,13 @@ void Renderer::init()
         glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
     shadowViews.push_back(
         glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+    //set up shaders and uniforms
     lightShader = Shader("./Assets/light.vert", "./Assets/light.frag");
     glUseProgram(lightShader.id);
     lightShader.registerUniform("model");
     lightShader.registerUniform("view");
     lightShader.registerUniform("persp");
+    //90 degrees per face to cover the whole scene
     lightShader.updateUniform("persp", perspective(radians(90.0f), 1.0f, 0.1f, 100.0f));
     mainShader = Shader("./Assets/main.vert", "./Assets/main.frag");
     glUseProgram(mainShader.id);
@@ -62,16 +67,16 @@ void Renderer::init()
     mainShader.registerUniform("persp");
     mainShader.updateUniform("persp", perspective(radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f));
     mainShader.updateUniform("view", lookAt(vec3(-9,-3,-9), vec3(2, 5, 2), vec3(0, 1, 0)));
+    //a huge cube acting as a room, weirdo
     Mesh room("./Assets/FlippedCube.glb", vec3(0, 0, 0));
     Mesh cubeA("./Assets/Cube.glb", vec3(2, 2, 2));
     meshes.push_back(room);
     meshes.push_back(cubeA);
-    
-
     assert("Failed to init" && glGetError() == 0);
 }
 void Renderer::renderPass()
 {
+    //writing depths to cubemap
     glViewport(0, 0, SHADOWMAP, SHADOWMAP);
     for (unsigned i = 0; i < 6; ++i)
     {
@@ -85,6 +90,7 @@ void Renderer::renderPass()
             meshes[j].draw();
         }
     }
+    //drawing the final scene with sampling the cubemap
     glViewport(0, 0, 1280, 720);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

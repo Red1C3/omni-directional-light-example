@@ -7,6 +7,7 @@ void main(){
   float farPlane=100.0f;
   vec3 lightDir=pos_world.xyz-lightPos;
   float closestDepth=texture(depthMap,lightDir).r;
+  //calculate depth by distance and compare it with sampled value
   float currentDepth=length(lightDir)/farPlane;
   if(closestDepth<currentDepth-0.0002){
     color=vec4(0,0,0,1);

@@ -14,6 +14,7 @@ int main()
                       "Omni-Directional-Light-Example",
                       Style::Default, ctxSettings);
     Renderer::instance().init();
+    //main loop
     while(1){
         Event event;
         while(mainWindow.pollEvent(event)){
